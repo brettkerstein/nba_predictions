@@ -94,7 +94,7 @@ def main():
     # Player selection
     player_list = sorted(df_clustered['PLAYER_NAME'].tolist())
     selected_player = st.selectbox("Select a player:", player_list)
-
+    
     if st.button("Find Similar Players"):
         similar_players = find_similar_players(df_clustered, selected_player)
         st.subheader(f"Players similar to {selected_player}:")
@@ -104,9 +104,18 @@ def main():
         # Display player stats
         st.subheader(f"Stats for {selected_player}:")
         player_stats = df_clustered[df_clustered['PLAYER_NAME'] == selected_player].iloc[0]
+        group_stats = df_clustered[df_clustered['PLAYER_NAME'] == selected_player]
         stats_to_display = ['PTS', 'AST', 'REB', 'STL', 'BLK', 'FG_PCT', 'FG3_PCT', 'FT_PCT']
         for stat in stats_to_display:
             st.write(f"{stat}: {player_stats[stat]:.2f}")
+        
+        st.subheader(f"Stats for group including {selected_player}:")
+        for stat in stats_to_display:
+            print(group_stats)
+            print(stat)
+            st.write(f"{stat}: {group_stats.agg({{stat}:'mean'})}")
+            
+        #streamlit run nba_player_similarity.py
 
 if __name__ == '__main__':
     main()
